@@ -4,12 +4,8 @@ import { TaskListContext } from "./TaskListContext";
 import Task from "./Task";
 
 function TaskList(props) {
-  const tasks = useContext(TaskListContext);
-
-  const [isEdit, setEdit] = useState(false)
-  const [editId, setEditId] = useState(null)
+  const { tasks, setTasks } = useContext(TaskListContext);
   const [newValue, setNewValue] = useState({});
-  const [newTasks, setNewTasks] = useState(tasks);
 
   const List = styled.div`
     width: 90%;
@@ -28,52 +24,54 @@ function TaskList(props) {
   `;
   const submitForm = (e) => {
     e.preventDefault();
-
-    // if(isEdit){
-    //   let edit = newTasks.filter(task => task.id === editId)
-    //   let changeData = edit.map(edit => (
-    //     {
-    //       id: edit.id,
-    //       task: newValue.task
-    //     }
-    //   ))
-    //   set
-    // }else{
-    // }
-    setNewTasks([...newTasks, newValue]);
+    let filterTask = tasks.filter((task) => task.id === newValue.id);
+    if (filterTask.length > 0) {
+      let getData = [...tasks];
+      getData.map((data) => {
+        if (data.id === newValue.id) {
+          data.id = newValue.id;
+          data.task = newValue.task;
+        }
+        return null;
+      });
+      setTasks(getData);
+    } else {
+      setTasks([...tasks, newValue]);
+    }
+    setNewValue({
+      id: undefined,
+      task: "",
+    });
   };
 
-  console.log(newTasks);
-
   const inputHandler = (value, indexValue) => {
-    
     setNewValue({
       id: indexValue,
       task: value,
     });
+    console.log(newValue);
   };
 
   const editItem = (id) => {
-    let getTask = newTasks.filter(task => task.id === id)
-    setEditId(id)
-    setNewValue(getTask[0])
-  }
-
-  const deleteItem = (id) => {
-    let poppedTasks = newTasks.filter((task) => task.id !== id);
-    setNewTasks(poppedTasks);
+    let getTask = tasks.filter((task) => task.id === id);
+    setNewValue(getTask[0]);
   };
 
+  const deleteItem = (id) => {
+    let poppedTasks = tasks.filter((task) => task.id !== id);
+    setTasks(poppedTasks);
+  };
 
   return (
     <div className="wrapper">
       <Task
+        valueId={newValue.id}
         submit={submitForm}
         change={inputHandler}
         inputValue={newValue.task}
       />
       <List>
-        {newTasks.map((task) => {
+        {tasks.map((task) => {
           return (
             <div key={task.id}>
               <Item>
@@ -82,7 +80,10 @@ function TaskList(props) {
                   className="fas fa-trash float-right ml-2"
                   onClick={() => deleteItem(task.id)}
                 ></i>
-                <i className="far fa-edit float-right" onClick={() => editItem(task.id)}></i>
+                <i
+                  className="far fa-edit float-right"
+                  onClick={() => editItem(task.id)}
+                ></i>
               </Item>
             </div>
           );

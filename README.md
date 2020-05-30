@@ -3,7 +3,7 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 # PROJECT INFO
 ```
 
-Task Manager App with React Hooks and Context API
+Task Manager App with React Hooks, Context API, and styled-components
 
 ```
 ## Available Scripts

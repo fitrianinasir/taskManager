@@ -11,7 +11,7 @@ function Task(props) {
     margin-left: 5px;
   `;
 
-  const [indexValue, setIndexValue] = useState(0);
+  const [indexValue, setIndexValue] = useState(4);
 
   return (
     <div>
@@ -19,7 +19,11 @@ function Task(props) {
         action=""
         onSubmit={(e) => {
           props.submit(e);
-          setIndexValue(indexValue + 1);
+          if (props.valueId !== undefined) {
+            setIndexValue(indexValue + 1);
+          } else {
+            setIndexValue(indexValue);
+          }
         }}
       >
         <input
@@ -27,7 +31,11 @@ function Task(props) {
           className="task-input"
           value={props.inputValue}
           onChange={(e) => {
-            props.change(e.target.value, indexValue);
+            if (props.valueId !== undefined) {
+              props.change(e.target.value, props.valueId);
+            } else {
+              props.change(e.target.value, indexValue);
+            }
           }}
         />
         <Button> Save</Button>
